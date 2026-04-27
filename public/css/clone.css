@@ -1,0 +1,47 @@
+/**
+ * -------------------------------------------------------------------------
+ * Clone Ticket plugin for GLPI
+ * -------------------------------------------------------------------------
+ * Styles for the clone button and modal
+ * -------------------------------------------------------------------------
+ */
+
+.plugin-clone-wrapper {
+    margin: 10px 0;
+    padding: 0;
+}
+
+.plugin-clone-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.plugin-clone-btn:hover {
+    background-color: var(--tblr-primary);
+    color: #fff;
+    border-color: var(--tblr-primary);
+}
+
+#plugin-clone-modal .modal-header {
+    background-color: var(--tblr-primary);
+    color: #fff;
+}
+
+#plugin-clone-modal .modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+#plugin-clone-modal .modal-title {
+    display: flex;
+    align-items: center;
+}
+
+#plugin-clone-entity-container {
+    min-height: 38px;
+}
+
+#plugin-clone-entity-container .select2-container {
+    width: 100% !important;
+}

@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: clone 1.0.0\n"
+"POT-Creation-Date: 2026-04-13 00:00+0000\n"
+"PO-Revision-Date: 2026-04-13 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: English\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Clone Ticket"
+msgstr "Clone Ticket"
+
+msgid "This plugin requires GLPI >= 11.0.0"
+msgstr "This plugin requires GLPI >= 11.0.0"
+
+msgid "Clone this ticket to another entity"
+msgstr "Clone this ticket to another entity"
+
+msgid "Clone to another entity"
+msgstr "Clone to another entity"
+
+msgid "Clone ticket #"
+msgstr "Clone ticket #"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Destination entity"
+msgstr "Destination entity"
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Clone"
+msgstr "Clone"
+
+msgid "Unable to open the cloning dialog. Check browser console."
+msgstr "Unable to open the cloning dialog. Check browser console."
+
+msgid "Bootstrap is not available on this page. Please reload the page."
+msgstr "Bootstrap is not available on this page. Please reload the page."
+
+msgid "Error while loading entities."
+msgstr "Error while loading entities."
+
+msgid "Please select a destination entity."
+msgstr "Please select a destination entity."
+
+msgid "Cloning in progress..."
+msgstr "Cloning in progress..."
+
+msgid "Open the new ticket"
+msgstr "Open the new ticket"
+
+msgid "Unknown error."
+msgstr "Unknown error."
+
+msgid "Communication error with server."
+msgstr "Communication error with server."
+
+msgid "You do not have the required rights."
+msgstr "You do not have the required rights."
+
+msgid "Invalid ticket ID."
+msgstr "Invalid ticket ID."
+
+msgid "You do not have access to the destination entity."
+msgstr "You do not have access to the destination entity."
+
+msgid "Ticket not found."
+msgstr "Ticket not found."
+
+msgid "You do not have access to this ticket."
+msgstr "You do not have access to this ticket."
+
+msgid "Error while cloning ticket."
+msgstr "Error while cloning ticket."
+
+msgid "Ticket successfully cloned (new ticket #%d)."
+msgstr "Ticket successfully cloned (new ticket #%d)."
+
+msgid "Linked items: %d copied"
+msgstr "Linked items: %d copied"
+
+msgid "%d already present"
+msgstr "%d already present"
+
+msgid "%d not copied"
+msgstr "%d not copied"
+
+msgid "Server error: %s"
+msgstr "Server error: %s"
