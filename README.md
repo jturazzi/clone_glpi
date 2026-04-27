@@ -26,7 +26,7 @@ No additional PHP extensions or database tables are needed.
 
 ```
 cd /var/www/glpi/plugins
-git clone <repository-url> clone
+git clone https://github.com/jturazzi/clone_glpi clone
 ```
 
 ## Usage
