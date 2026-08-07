@@ -12,6 +12,7 @@ This plugin checks each of those references against the destination entity befor
 
 - Adds a "Propagate to entity" button on every ticket form.
 - Opens a modal where you pick the destination entity.
+- Shows a preview of what will happen as soon as you pick one: category, location, requester, assignee, observer, and group, each marked kept or cleared with a reason, before you commit to anything.
 - Creates the ticket in the destination entity through GLPI's normal ticket creation path, so that entity's own rules (SLA assignment, business rules, and so on) get to run instead of being skipped.
 - Checks category, location, requester, assignee, observer, and assigned group against the destination entity before deciding whether to keep them.
 - Relinks any assets attached to the ticket, but only the ones actually visible from the destination entity.
@@ -42,10 +43,10 @@ git clone https://github.com/jturazzi/clone_glpi clone
 
 1. Open an existing ticket.
 2. Click "Propagate to entity" (visible to supervisors and super-admins).
-3. Pick the destination entity from the dropdown.
+3. Pick the destination entity from the dropdown. A preview appears showing what will carry over and what won't, and why.
 4. Click Propagate. The plugin creates the ticket and gives you a link to it.
 
-If a category, location, technician, requester, observer, or group on the original ticket doesn't apply in the destination entity, it's simply left off the new ticket rather than carried over incorrectly. The new ticket keeps a link back to the one it came from, so you can trace it later.
+If a category, location, technician, requester, observer, or group on the original ticket doesn't apply in the destination entity, it's simply left off the new ticket rather than carried over incorrectly. That's exactly what the preview in step 3 tells you before you commit to it. The new ticket keeps a link back to the one it came from, so you can trace it later.
 
 ## Permissions
 
@@ -79,7 +80,8 @@ clone/
 ├── phpunit.xml                         # Test configuration (run from a GLPI dev checkout)
 ├── ajax/
 │   ├── clone_ticket.php                # AJAX endpoint, runs the propagation
-│   └── get_entity_dropdown.php         # AJAX endpoint, returns the entity <select>
+│   ├── get_entity_dropdown.php         # AJAX endpoint, returns the entity <select>
+│   └── preview_propagation.php         # AJAX endpoint, read-only preview of what will happen
 ├── src/                                # Propagation engine (PSR-4, GlpiPlugin\Clone\*)
 │   ├── PropagationRequest.php          # One propagation ask: source ticket + destination entity
 │   ├── PropagationPreflightService.php # Decides what to keep or clear, per field

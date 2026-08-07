@@ -45,3 +45,18 @@
 #plugin-clone-entity-container .select2-container {
     width: 100% !important;
 }
+
+.plugin-clone-preview-panel {
+    border: 1px solid var(--tblr-border-color, #dee2e6);
+    border-radius: 4px;
+    padding: 10px 12px;
+    background-color: var(--tblr-bg-surface-secondary, #f8f9fa);
+}
+
+.plugin-clone-preview-row {
+    border-top: 1px solid var(--tblr-border-color-translucent, rgba(0, 0, 0, 0.075));
+}
+
+.plugin-clone-preview-row:first-of-type {
+    border-top: none;
+}

@@ -169,6 +169,21 @@ function plugin_clone_post_item_form($params)
     $unknown_error_label         = htmlspecialchars(__('Unknown error.', 'clone'), ENT_QUOTES, 'UTF-8');
     $communication_error_label   = htmlspecialchars(__('Communication error with server.', 'clone'), ENT_QUOTES, 'UTF-8');
 
+    // Preview panel: shown before propagation runs, built from the exact
+    // same PropagationPreflightService decision the executor uses (see
+    // ajax/preview_propagation.php), not a separate guess at the outcome.
+    $preview_heading             = htmlspecialchars(__('What will happen', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_loading             = htmlspecialchars(__('Checking what will carry over...', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_error               = htmlspecialchars(__('Could not load the preview.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_kept_label          = htmlspecialchars(__('Kept', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_cleared_label       = htmlspecialchars(__('Cleared', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_field_category      = htmlspecialchars(__('Category', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_field_location      = htmlspecialchars(__('Location', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_field_requester     = htmlspecialchars(__('Requester', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_field_assignee      = htmlspecialchars(__('Assignee', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_field_observer      = htmlspecialchars(__('Observer', 'clone'), ENT_QUOTES, 'UTF-8');
+    $preview_field_group         = htmlspecialchars(__('Group', 'clone'), ENT_QUOTES, 'UTF-8');
+
     echo <<<HTML
     <div id="plugin-clone-container" class="plugin-clone-wrapper">
         <button type="button" 
@@ -191,6 +206,17 @@ function plugin_clone_post_item_form($params)
                 data-i18n-open-new-ticket-label="{$open_new_ticket_label}"
                 data-i18n-unknown-error-label="{$unknown_error_label}"
                 data-i18n-communication-error-label="{$communication_error_label}"
+                data-i18n-preview-heading="{$preview_heading}"
+                data-i18n-preview-loading="{$preview_loading}"
+                data-i18n-preview-error="{$preview_error}"
+                data-i18n-preview-kept-label="{$preview_kept_label}"
+                data-i18n-preview-cleared-label="{$preview_cleared_label}"
+                data-i18n-preview-field-category="{$preview_field_category}"
+                data-i18n-preview-field-location="{$preview_field_location}"
+                data-i18n-preview-field-requester="{$preview_field_requester}"
+                data-i18n-preview-field-assignee="{$preview_field_assignee}"
+                data-i18n-preview-field-observer="{$preview_field_observer}"
+                data-i18n-preview-field-group="{$preview_field_group}"
                 title="{$button_title}">
             <i class="ti ti-copy"></i> {$button_label}
         </button>
