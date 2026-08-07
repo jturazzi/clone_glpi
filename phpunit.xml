@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Run from a real GLPI 11 dev checkout with this plugin installed at
+  plugins/clone/, from the GLPI root:
+
+      phpunit --configuration plugins/clone/phpunit.xml
+
+  bootstrap points at the parent GLPI installation's own tests/bootstrap.php
+  (confirmed present at glpi-project/glpi tests/bootstrap.php), the same file
+  GLPI core's own phpunit.xml.dist uses, so this plugin's tests run against
+  the same configured test database GLPI core tests use.
+-->
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="../../tests/bootstrap.php"
+    colors="true"
+    displayDetailsOnAllIssues="true"
+>
+  <testsuites>
+    <testsuite name="CloneTicketPlugin">
+      <directory>tests/</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

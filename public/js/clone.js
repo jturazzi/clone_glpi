@@ -8,6 +8,102 @@
 (function () {
     "use strict";
 
+    var PROPAGATION_OP_STORAGE_PREFIX = "plugin_clone_propagation_op_";
+    // Comfortably longer than any real network hang/retry, short enough that
+    // "the user came back later with a deliberately fresh attempt" reliably
+    // falls outside it. There is no UI in PR1 for "retry vs. start over" (by
+    // design -- see conversation), so this window is the only thing standing
+    // in for that decision. Not keyed off modal-close: closing the modal
+    // doesn't prove the in-flight fetch died with it, so treating close as
+    // abandonment risks minting a second UUID -- and a second ticket -- for a
+    // request that actually succeeded moments later.
+    var PROPAGATION_OP_TTL_MS = 30 * 60 * 1000;
+    var PROPAGATION_OP_VERSION = 1;
+    var inMemoryPropagationOps = {}; // fallback if sessionStorage is unavailable
+
+    // version is checked (not just parsed) so a future change to this
+    // record's shape can discard old-format entries outright instead of
+    // having to interpret them -- a tab left open across a clone.js upgrade
+    // should never hand a mismatched shape to resolvePropagationUuid().
+    function isValidOperation(candidate) {
+        return !!candidate && candidate.version === PROPAGATION_OP_VERSION;
+    }
+
+    // Keyed by (ticket, target entity), not ticket alone: a single
+    // ticket->entity slot would let propagating the same ticket to a
+    // *second* entity silently overwrite the first entity's still-relevant
+    // operation record. Confirmed by test: with a ticket-only key,
+    // B -> C -> back to B produced a fresh UUID for B against a slot the
+    // server has no record of -- if the original B attempt had already
+    // succeeded, that reissues a second ticket in B, not a caught
+    // duplicate. That failure mode is worse than the accepted "2 hours
+    // later" gap because it can happen within seconds of ordinary use
+    // (propagate to two different entities, then revisit the first).
+    function operationStorageKey(ticketId, targetEntityId) {
+        return PROPAGATION_OP_STORAGE_PREFIX + ticketId + "_" + targetEntityId;
+    }
+
+    function readStoredOperation(ticketId, targetEntityId) {
+        var storageKey = operationStorageKey(ticketId, targetEntityId);
+        try {
+            var raw = window.sessionStorage.getItem(storageKey);
+            var parsed = raw ? JSON.parse(raw) : null;
+            return isValidOperation(parsed) ? parsed : null;
+        } catch (e) {
+            var fallback = inMemoryPropagationOps[storageKey] || null;
+            return isValidOperation(fallback) ? fallback : null;
+        }
+    }
+
+    function writeStoredOperation(ticketId, targetEntityId, operation) {
+        operation.version = PROPAGATION_OP_VERSION;
+        var storageKey = operationStorageKey(ticketId, targetEntityId);
+        try {
+            window.sessionStorage.setItem(storageKey, JSON.stringify(operation));
+        } catch (e) {
+            inMemoryPropagationOps[storageKey] = operation;
+        }
+    }
+
+    // Discard the operation only once the propagation has definitively
+    // succeeded (per the locked design: happens after success, never merely
+    // because the Submit button becomes clickable again).
+    function clearStoredOperation(ticketId, targetEntityId) {
+        var storageKey = operationStorageKey(ticketId, targetEntityId);
+        try {
+            window.sessionStorage.removeItem(storageKey);
+        } catch (e) {
+            // ignore: nothing to clean up if storage was never available
+        }
+        delete inMemoryPropagationOps[storageKey];
+    }
+
+    /**
+     * Idempotency key for this (ticket, destination entity) submission.
+     * Reused only if a record already exists for this exact pair and is
+     * still within the TTL window; a different destination entity is a
+     * different storage slot entirely, so it always gets its own fresh key
+     * with no risk of clobbering another entity's still-relevant record.
+     * Resolved at first submit, not at modal open -- opening the modal and
+     * not submitting reserves nothing.
+     */
+    function resolvePropagationUuid(ticketId, targetEntityId) {
+        var existing = readStoredOperation(ticketId, targetEntityId);
+        var now = Date.now();
+
+        if (existing && (now - existing.createdAt) < PROPAGATION_OP_TTL_MS) {
+            return existing.batchUuid;
+        }
+
+        var fresh = generateUuidV4();
+        writeStoredOperation(ticketId, targetEntityId, {
+            batchUuid: fresh,
+            targetEntityId: targetEntityId,
+            createdAt: now
+        });
+        return fresh;
+    }
+
     // Use event delegation on document body since the button is injected
     // dynamically by the POST_ITEM_FORM hook after page load
     document.addEventListener("click", function (e) {
@@ -35,16 +131,16 @@
         var csrf = btn.getAttribute("data-csrf");
         var rootDoc = (typeof CFG_GLPI !== "undefined" && CFG_GLPI.root_doc) ? CFG_GLPI.root_doc : "";
         var i18n = {
-            modalTitlePrefix: btn.getAttribute("data-i18n-modal-title-prefix") || "Clone ticket #",
+            modalTitlePrefix: btn.getAttribute("data-i18n-modal-title-prefix") || "Propagate ticket #",
             closeLabel: btn.getAttribute("data-i18n-close-label") || "Close",
             destinationEntityLabel: btn.getAttribute("data-i18n-destination-entity-label") || "Destination entity",
             loadingLabel: btn.getAttribute("data-i18n-loading-label") || "Loading...",
             cancelLabel: btn.getAttribute("data-i18n-cancel-label") || "Cancel",
-            cloneLabel: btn.getAttribute("data-i18n-clone-label") || "Clone",
+            cloneLabel: btn.getAttribute("data-i18n-clone-label") || "Propagate",
             bootstrapMissing: btn.getAttribute("data-i18n-bootstrap-missing") || "Bootstrap is not available on this page. Please reload the page.",
             entityLoadError: btn.getAttribute("data-i18n-entity-load-error") || "Error while loading entities.",
             selectEntityError: btn.getAttribute("data-i18n-select-entity-error") || "Please select a destination entity.",
-            cloningInProgress: btn.getAttribute("data-i18n-cloning-in-progress") || "Cloning in progress...",
+            cloningInProgress: btn.getAttribute("data-i18n-cloning-in-progress") || "Propagating...",
             openNewTicketLabel: btn.getAttribute("data-i18n-open-new-ticket-label") || "Open the new ticket",
             unknownErrorLabel: btn.getAttribute("data-i18n-unknown-error-label") || "Unknown error.",
             communicationErrorLabel: btn.getAttribute("data-i18n-communication-error-label") || "Communication error with server."
@@ -140,7 +236,7 @@
         // Submit handler
         var submitBtn = document.getElementById("plugin-clone-submit");
         submitBtn.addEventListener("click", function () {
-            // Retrieve value — prefer jQuery/Select2 API when available
+            // Retrieve value, prefer jQuery/Select2 API when available
             var entityId = null;
             if (typeof $ !== "undefined" && $.fn.select2) {
                 var $sel = $(container).find("select[name='clone_entities_id']");
@@ -164,12 +260,20 @@
                 return;
             }
 
+            // Resolved fresh on every click: if this is a retry of the same
+            // (ticket, destination) within the TTL window it reuses the
+            // stored key, otherwise (different destination, or enough time
+            // has passed that this reads as a deliberately new attempt) it
+            // mints one and persists it as the new stored operation.
+            var propagationUuid = resolvePropagationUuid(ticketId, entityId);
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> ' + escapeHtml(i18n.cloningInProgress);
 
             var formData = new FormData();
             formData.append("ticket_id", ticketId);
             formData.append("entities_id", entityId);
+            formData.append("propagation_uuid", propagationUuid);
             formData.append("_glpi_csrf_token", csrf);
 
             fetch(ajaxUrl, {
@@ -195,6 +299,11 @@
                         ' <a href="' + escapeHtml(data.ticket_url) + '" class="alert-link">' + escapeHtml(i18n.openNewTicketLabel) + '</a>'
                     );
                     submitBtn.classList.add("d-none");
+                    // Definitive success (including an idempotent replay of an
+                    // already-completed propagation): this ticket ID is done
+                    // with. The next "Propagate to entity" click on it is a
+                    // genuinely new attempt and should get a fresh key.
+                    clearStoredOperation(ticketId, entityId);
                 } else {
                     showAlert("danger", data.message || i18n.unknownErrorLabel);
                     submitBtn.disabled = false;
@@ -227,5 +336,20 @@
         var div = document.createElement("div");
         div.appendChild(document.createTextNode(text));
         return div.innerHTML;
+    }
+
+    function generateUuidV4() {
+        if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+            return crypto.randomUUID();
+        }
+        // Fallback for browsers without crypto.randomUUID (non-secure
+        // contexts, older browsers). Not cryptographically strong, but this
+        // value is only ever used as a request-deduplication key, never a
+        // security token.
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+            var r = (Math.random() * 16) | 0;
+            var v = c === "x" ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
     }
 })();
