@@ -60,3 +60,11 @@
 .plugin-clone-preview-row:first-of-type {
     border-top: none;
 }
+
+.plugin-clone-result-row {
+    border-top: 1px solid var(--tblr-border-color-translucent, rgba(0, 0, 0, 0.075));
+}
+
+.plugin-clone-result-row:first-of-type {
+    border-top: none;
+}
