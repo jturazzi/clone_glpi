@@ -6,12 +6,12 @@
    <logo>https://raw.githubusercontent.com/jturazzi/clone_glpi/main/public/css/logo.png</logo>
    <description>
       <short>
-         <en>Clone GLPI tickets to another entity in one click</en>
-         <fr_FR>Clonez un ticket GLPI vers une autre entité en un clic</fr_FR>
+         <en>Propagate GLPI tickets to another entity in one click, keeping only what's valid there</en>
+         <fr_FR>Propagez un ticket GLPI vers une autre entité en un clic, en ne conservant que ce qui y est valide</fr_FR>
       </short>
       <long>
-         <en>Clone Ticket is a plugin for GLPI that adds a button on ticket forms to clone them to another entity. It includes linked items (computers, phones, etc.) and provides a direct link to the newly created ticket.</en>
-         <fr_FR>Clone Ticket est un plugin GLPI qui ajoute un bouton sur les formulaires de tickets pour les cloner vers une autre entité. Il inclut les éléments liés (ordinateurs, téléphones, etc.) et fournit un lien direct vers le nouveau ticket créé.</fr_FR>
+         <en>Clone Ticket adds a "Propagate to entity" button on ticket forms. Before creating the ticket in the destination entity, it checks the category, location, requester, assignee, observer, and assigned group against that entity, and shows a preview of what will be kept or cleared, and why. The ticket is created through GLPI's normal creation path so the destination entity's own business rules apply, linked assets are relinked only if visible there, the new ticket is linked back to the original, and retries are handled safely so a timeout never creates a duplicate.</en>
+         <fr_FR>Clone Ticket ajoute un bouton « Propager vers une entité » sur les formulaires de tickets. Avant de créer le ticket dans l'entité de destination, il vérifie la catégorie, la localisation, le demandeur, l'attribué, l'observateur et le groupe assigné par rapport à cette entité, et affiche un aperçu de ce qui sera conservé ou effacé, et pourquoi. Le ticket est créé via le circuit normal de GLPI afin que les règles métier de l'entité de destination s'appliquent, les éléments liés ne sont reliés à nouveau que s'ils y sont visibles, le nouveau ticket reste lié à l'original, et les nouvelles tentatives sont gérées en toute sécurité pour qu'un délai d'attente ne crée jamais de doublon.</fr_FR>
       </long>
    </description>
    <homepage>https://github.com/jturazzi/clone_glpi</homepage>
@@ -21,10 +21,11 @@
    <changelog>https://github.com/jturazzi/clone_glpi/releases</changelog>
    <authors>
       <author>Jeremy Turazzi</author>
+      <author>Mohammed Ghouse</author>
    </authors>
    <versions>
       <version>
-         <num>1.0.0</num>
+         <num>1.3.0</num>
          <compatibility>~11.0.0</compatibility>
          <download_url>https://github.com/jturazzi/clone_glpi/releases/download/v1.0.0/clone-1.0.0.zip</download_url>
       </version>
@@ -33,17 +34,19 @@
       <lang>en_GB</lang>
       <lang>fr_FR</lang>
    </langs>
-   <license>GPL v2+</license>
+   <license>MIT</license>
    <tags>
       <en>
          <tag>ticket</tag>
-         <tag>clone</tag>
+         <tag>propagation</tag>
          <tag>entity</tag>
+         <tag>multi-entity</tag>
       </en>
       <fr_FR>
          <tag>ticket</tag>
-         <tag>cloner</tag>
+         <tag>propagation</tag>
          <tag>entité</tag>
+         <tag>multi-entité</tag>
       </fr_FR>
    </tags>
    <screenshots>

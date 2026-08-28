@@ -128,8 +128,16 @@ phpunit --configuration plugins/clone/phpunit.xml
 
 ## License
 
-This plugin is distributed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+This plugin is distributed under the [MIT License](LICENSE).
 
 ## Author
 
 **Jérémy TURAZZI**
+
+## Contributors
+
+**Mohammed GHOUSE**
+
+- Replaced raw ticket cloning with the entity-aware propagation engine (checking category, location, requester, assignee, observer, and group against the destination entity; creating the ticket through `Ticket::add()`; linking source and destination; propagation ledger with idempotent retry handling).
+- Added the propagation preview shown in the modal as soon as a destination entity is picked, before the ticket is created.
+- Synced the translation catalogs with the renamed and added strings.
