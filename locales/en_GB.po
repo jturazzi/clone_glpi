@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: clone 1.0.0\n"
-"POT-Creation-Date: 2026-04-13 00:00+0000\n"
-"PO-Revision-Date: 2026-04-13 00:00+0000\n"
+"Project-Id-Version: clone 1.1.0\n"
+"POT-Creation-Date: 2026-08-23 00:00+0000\n"
+"PO-Revision-Date: 2026-08-23 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: English\n"
 "Language: en_GB\n"
@@ -11,89 +11,179 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Clone Ticket"
-msgstr "Clone Ticket"
+msgid "%d not copied"
+msgstr "%d not copied"
 
-msgid "This plugin requires GLPI >= 11.0.0"
-msgstr "This plugin requires GLPI >= 11.0.0"
+msgid "%d not valid in destination entity"
+msgstr "%d not valid in destination entity"
 
-msgid "Clone this ticket to another entity"
-msgstr "Clone this ticket to another entity"
+msgid "All %s(s) are valid in the destination entity."
+msgstr "All %s(s) are valid in the destination entity."
 
-msgid "Clone to another entity"
-msgstr "Clone to another entity"
+msgid "All assigned group(s) are visible in the destination entity."
+msgstr "All assigned group(s) are visible in the destination entity."
 
-msgid "Clone ticket #"
-msgstr "Clone ticket #"
+msgid "An unexpected error occurred. Check the GLPI log for details."
+msgstr "An unexpected error occurred. Check the GLPI log for details."
 
-msgid "Close"
-msgstr "Close"
+msgid "Assignee"
+msgstr "Assignee"
 
-msgid "Destination entity"
-msgstr "Destination entity"
+msgid "At least one %s has no applicable rights in the destination entity."
+msgstr "At least one %s has no applicable rights in the destination entity."
 
-msgid "Loading..."
-msgstr "Loading..."
-
-msgid "Cancel"
-msgstr "Cancel"
-
-msgid "Clone"
-msgstr "Clone"
-
-msgid "Unable to open the cloning dialog. Check browser console."
-msgstr "Unable to open the cloning dialog. Check browser console."
+msgid "At least one assigned group is not visible in the destination entity."
+msgstr "At least one assigned group is not visible in the destination entity."
 
 msgid "Bootstrap is not available on this page. Please reload the page."
 msgstr "Bootstrap is not available on this page. Please reload the page."
 
-msgid "Error while loading entities."
-msgstr "Error while loading entities."
+msgid "Cancel"
+msgstr "Cancel"
 
-msgid "Please select a destination entity."
-msgstr "Please select a destination entity."
+msgid "Category"
+msgstr "Category"
 
-msgid "Cloning in progress..."
-msgstr "Cloning in progress..."
+msgid "Category is not visible in the destination entity."
+msgstr "Category is not visible in the destination entity."
 
-msgid "Open the new ticket"
-msgstr "Open the new ticket"
+msgid "Category is visible in the destination entity."
+msgstr "Category is visible in the destination entity."
 
-msgid "Unknown error."
-msgstr "Unknown error."
+msgid "Checking what will carry over..."
+msgstr "Checking what will carry over..."
+
+msgid "Cleared"
+msgstr "Cleared"
+
+msgid "Clone Ticket"
+msgstr "Clone Ticket"
+
+msgid "Close"
+msgstr "Close"
 
 msgid "Communication error with server."
 msgstr "Communication error with server."
 
-msgid "You do not have the required rights."
-msgstr "You do not have the required rights."
+msgid "Could not load the preview."
+msgstr "Could not load the preview."
+
+msgid "Destination entity"
+msgstr "Destination entity"
+
+msgid "Error while loading entities."
+msgstr "Error while loading entities."
+
+msgid "Group"
+msgstr "Group"
+
+msgid "Invalid or missing request identifier. Please reload the page and try again."
+msgstr "Invalid or missing request identifier. Please reload the page and try again."
 
 msgid "Invalid ticket ID."
 msgstr "Invalid ticket ID."
 
-msgid "You do not have access to the destination entity."
-msgstr "You do not have access to the destination entity."
-
-msgid "Ticket not found."
-msgstr "Ticket not found."
-
-msgid "You do not have access to this ticket."
-msgstr "You do not have access to this ticket."
-
-msgid "Error while cloning ticket."
-msgstr "Error while cloning ticket."
-
-msgid "Ticket successfully cloned (new ticket #%d)."
-msgstr "Ticket successfully cloned (new ticket #%d)."
+msgid "Kept"
+msgstr "Kept"
 
 msgid "Linked items: %d copied"
 msgstr "Linked items: %d copied"
 
-msgid "%d already present"
-msgstr "%d already present"
+msgid "Loading..."
+msgstr "Loading..."
 
-msgid "%d not copied"
-msgstr "%d not copied"
+msgid "Location"
+msgstr "Location"
 
-msgid "Server error: %s"
-msgstr "Server error: %s"
+msgid "Location is not visible in the destination entity."
+msgstr "Location is not visible in the destination entity."
+
+msgid "Location is visible in the destination entity."
+msgstr "Location is visible in the destination entity."
+
+msgid "No %s set on source ticket."
+msgstr "No %s set on source ticket."
+
+msgid "No assigned group set on source ticket."
+msgstr "No assigned group set on source ticket."
+
+msgid "No category set on source ticket."
+msgstr "No category set on source ticket."
+
+msgid "No location set on source ticket."
+msgstr "No location set on source ticket."
+
+msgid "Observer"
+msgstr "Observer"
+
+msgid "One or more actors are not valid in the destination entity."
+msgstr "One or more actors are not valid in the destination entity."
+
+msgid "Open the new ticket"
+msgstr "Open the new ticket"
+
+msgid "Please select a destination entity."
+msgstr "Please select a destination entity."
+
+msgid "Propagate"
+msgstr "Propagate"
+
+msgid "Propagate this ticket to another entity"
+msgstr "Propagate this ticket to another entity"
+
+msgid "Propagate ticket #"
+msgstr "Propagate ticket #"
+
+msgid "Propagate to entity"
+msgstr "Propagate to entity"
+
+msgid "Propagating..."
+msgstr "Propagating..."
+
+msgid "Requester"
+msgstr "Requester"
+
+msgid "The destination ticket could not be created."
+msgstr "The destination ticket could not be created."
+
+msgid "The source ticket could not be found."
+msgstr "The source ticket could not be found."
+
+msgid "The ticket category is not visible in the destination entity."
+msgstr "The ticket category is not visible in the destination entity."
+
+msgid "The ticket was created but the source/destination link could not be recorded."
+msgstr "The ticket was created but the source/destination link could not be recorded."
+
+msgid "This plugin requires GLPI >= 11.0.0"
+msgstr "This plugin requires GLPI >= 11.0.0"
+
+msgid "This propagation is already in progress."
+msgstr "This propagation is already in progress."
+
+msgid "This ticket was already propagated to this entity."
+msgstr "This ticket was already propagated to this entity."
+
+msgid "Ticket not found."
+msgstr "Ticket not found."
+
+msgid "Ticket successfully cloned (new ticket #%d)."
+msgstr "Ticket successfully cloned (new ticket #%d)."
+
+msgid "Unable to open the propagation dialog. Check browser console."
+msgstr "Unable to open the propagation dialog. Check browser console."
+
+msgid "Unknown error."
+msgstr "Unknown error."
+
+msgid "What will happen"
+msgstr "What will happen"
+
+msgid "You do not have access to the destination entity."
+msgstr "You do not have access to the destination entity."
+
+msgid "You do not have access to this ticket."
+msgstr "You do not have access to this ticket."
+
+msgid "You do not have the required rights."
+msgstr "You do not have the required rights."
