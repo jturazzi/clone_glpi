@@ -2,6 +2,8 @@
 
 Ce plugin permet d'envoyer un ticket GLPI vers une autre entité en un clic, sans traîner avec lui une catégorie, un technicien ou une localisation qui n'a plus de sens une fois le ticket arrivé ailleurs.
 
+![Aperçu de la propagation](demo/screen1.png)
+
 ## Pourquoi ce plugin existe
 
 Si vous exploitez GLPI sur plusieurs entités (un MSP avec une entité par client, ou une grande organisation découpée en services), vous avez probablement déjà eu besoin de copier un ticket d'une entité vers une autre. La solution évidente consiste à cloner la ligne et à changer `entities_id`. Le problème, c'est qu'un ticket parfaitement valide dans l'entité A peut référencer des éléments qui n'existent pas, ou qui ne devraient pas être visibles, dans l'entité B : un arbre de catégories propre à A, un technicien qui n'a aucun droit dans B, une localisation qui n'a de sens que dans A.
