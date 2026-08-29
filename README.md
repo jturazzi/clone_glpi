@@ -112,6 +112,8 @@ clone/
 ├── locales/
 │   ├── en_GB.po                        # English translations
 │   └── fr_FR.po                        # French translations
+├── tools/
+│   └── compile-locales.php             # Compiles every locales/*.po into a matching .mo
 └── public/
     ├── css/
     │   └── clone.css                   # Button & modal styles
@@ -121,7 +123,13 @@ clone/
 
 ## Translations
 
-The plugin ships with English (`en_GB`) and French (`fr_FR`) locales. To add a new language, create the corresponding `.po` file in `locales/` and compile it to `.mo` with `msgfmt`:
+The plugin ships with English (`en_GB`) and French (`fr_FR`) locales. To add a new language, create the corresponding `.po` file in `locales/`, then compile every `.po` file into a matching `.mo` with the bundled script (no `gettext` install required):
+
+```bash
+php tools/compile-locales.php
+```
+
+If `msgfmt` is available, compiling a single file directly works too:
 
 ```bash
 msgfmt locales/fr_FR.po -o locales/fr_FR.mo

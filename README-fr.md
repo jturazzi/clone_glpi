@@ -13,13 +13,14 @@ Ce plugin vérifie chacune de ces références par rapport à l'entité de desti
 ## Ce que fait le plugin
 
 - Ajoute un bouton « Propager vers une entité » sur chaque formulaire de ticket.
-- Ouvre une fenêtre modale où vous choisissez l'entité de destination.
-- Affiche un aperçu de ce qui va se passer dès que vous choisissez une entité : catégorie, localisation, demandeur, attribué, observateur et groupe, chacun marqué comme conservé ou effacé avec la raison, avant que vous validiez quoi que ce soit.
-- Crée le ticket dans l'entité de destination via le circuit normal de création de ticket de GLPI, de sorte que les règles propres à cette entité (attribution de SLA, règles métier, etc.) s'appliquent au lieu d'être court-circuitées.
-- Vérifie la catégorie, la localisation, le demandeur, l'attribué, l'observateur et le groupe assigné par rapport à l'entité de destination avant de décider de les conserver ou non.
-- Relie à nouveau les éléments liés au ticket, mais uniquement ceux réellement visibles depuis l'entité de destination.
-- Relie le nouveau ticket à l'original, afin de garder une trace de son origine.
-- Gère les nouvelles tentatives en toute sécurité. Si une requête expire et que vous cliquez de nouveau, vous ne vous retrouverez pas avec deux tickets.
+- Ouvre une fenêtre modale où vous choisissez une ou plusieurs entités de destination.
+- Affiche un aperçu pour chaque destination dès que vous la choisissez : catégorie, localisation, demandeur, attribué, observateur et groupe, chacun marqué comme conservé ou effacé avec la raison, avant que vous validiez quoi que ce soit.
+- Crée le ticket dans chaque entité de destination via le circuit normal de création de ticket de GLPI, de sorte que les règles propres à cette entité (attribution de SLA, règles métier, etc.) s'appliquent au lieu d'être court-circuitées.
+- Vérifie la catégorie, la localisation, le demandeur, l'attribué, l'observateur et le groupe assigné par rapport à chaque entité de destination avant de décider de les conserver ou non.
+- Relie à nouveau les éléments liés au ticket, mais uniquement ceux réellement visibles depuis l'entité de destination concernée.
+- Relie chaque nouveau ticket à l'original, afin de garder une trace de son origine.
+- Gère les nouvelles tentatives en toute sécurité. Si une requête expire et que vous cliquez de nouveau, vous ne vous retrouverez pas avec des tickets en double dans une destination quelconque.
+- Propage vers jusqu'à 25 entités en une seule action, chacune avec son propre résultat, de sorte qu'un échec sur une destination n'arrête pas les autres.
 
 ## Prérequis
 
@@ -45,10 +46,10 @@ git clone https://github.com/jturazzi/clone_glpi clone
 
 1. Ouvrez un ticket existant.
 2. Cliquez sur « Propager vers une entité » (visible par les superviseurs et super-administrateurs).
-3. Choisissez l'entité de destination dans le menu déroulant. Un aperçu apparaît, indiquant ce qui sera conservé, ce qui ne le sera pas, et pourquoi.
-4. Cliquez sur Propager. Le plugin crée le ticket et vous fournit un lien vers celui-ci.
+3. Choisissez une ou plusieurs entités de destination dans le menu déroulant. Un aperçu apparaît pour chacune, indiquant ce qui sera conservé, ce qui ne le sera pas, et pourquoi.
+4. Cliquez sur Propager. Le plugin crée un ticket dans chaque destination et affiche une ligne de résultat par destination, avec un lien vers le nouveau ticket partout où l'opération a réussi.
 
-Si une catégorie, une localisation, un technicien, un demandeur, un observateur ou un groupe du ticket d'origine ne s'applique pas dans l'entité de destination, il est simplement omis du nouveau ticket plutôt que reporté à tort. C'est exactement ce que vous indique l'aperçu de l'étape 3 avant validation. Le nouveau ticket conserve un lien vers celui dont il provient, afin de pouvoir le retracer par la suite.
+Si une catégorie, une localisation, un technicien, un demandeur, un observateur ou un groupe du ticket d'origine ne s'applique pas dans une entité de destination donnée, il est simplement omis de ce nouveau ticket plutôt que reporté à tort. C'est exactement ce que vous indique l'aperçu de l'étape 3 avant validation. Chaque nouveau ticket conserve un lien vers celui dont il provient, afin de pouvoir le retracer par la suite.
 
 ## Permissions
 
@@ -71,7 +72,11 @@ Rien n'est copié sur le nouveau ticket au seul motif que le même identifiant e
 
 ## Nouvelles tentatives en toute sécurité
 
-Si une requête de propagation expire ou que la connexion est coupée avant que vous ne voyiez de résultat, cliquer de nouveau sur le bouton ne créera pas un second ticket. Le navigateur mémorise une tentative en cours, par ticket et par entité de destination, pendant environ trente minutes, et le serveur reconnaît une tentative répétée comme étant la même au lieu de repartir de zéro. Choisir une entité de destination différente, ou attendre plus longtemps que ce délai, est traité comme une nouvelle tentative.
+Si une requête de propagation expire ou que la connexion est coupée avant que vous ne voyiez de résultat, cliquer de nouveau sur le bouton ne créera pas de tickets en double. Le navigateur mémorise une tentative en cours, par ticket et par ensemble d'entités de destination, pendant environ trente minutes, et le serveur reconnaît une tentative répétée comme étant la même au lieu de repartir de zéro. Si certaines destinations ont réussi et d'autres échoué, une nouvelle tentative ne relance que celles qui ont échoué ; celles qui ont déjà réussi sont renvoyées telles quelles. Choisir un ensemble d'entités de destination différent, ou attendre plus longtemps que ce délai, est traité comme une nouvelle tentative.
+
+## Propagation en masse
+
+Vous pouvez propager vers plusieurs entités en une seule fois, jusqu'à 25 par requête. Chaque destination est indépendante : elle a son propre aperçu, sa propre transaction, son propre résultat de réussite ou d'échec, et l'échec de l'une n'a aucun effet sur les autres. C'est délibérément synchrone, et non mis en file d'attente : tout se produit au sein de la même requête que vous soumettez. Si vous avez un jour besoin de plus de 25 destinations à la fois, c'est le signe que ce plugin aurait besoin d'une version asynchrone et planifiée de la propagation, pas simplement d'un nombre plus élevé ici.
 
 ## Arborescence des fichiers
 
@@ -88,7 +93,8 @@ clone/
 │   ├── PropagationRequest.php          # Une demande de propagation : ticket source + entité de destination
 │   ├── PropagationPreflightService.php # Décide ce qui est conservé ou effacé, champ par champ
 │   ├── PropagationPlan.php             # La décision, champ par champ
-│   ├── PropagationExecutor.php         # Crée le ticket, le relie, enregistre le résultat
+│   ├── PropagationExecutor.php         # Crée le ticket, le relie, enregistre le résultat (une destination)
+│   ├── PropagationBatchExecutor.php    # Propage un ticket vers plusieurs destinations (propagation en masse)
 │   ├── PropagationLedgerRepository.php # Lit et écrit la table d'historique de propagation
 │   ├── PropagationError.php            # Codes d'erreur affichés aux administrateurs
 │   ├── EntityScopedItemVisibility.php  # Vérification partagée de visibilité catégorie/localisation/groupe
@@ -101,10 +107,13 @@ clone/
 │       └── GroupValidator.php
 ├── tests/
 │   ├── PropagationPreflightServiceTest.php
-│   └── PropagationExecutorTest.php
+│   ├── PropagationExecutorTest.php
+│   └── PropagationBatchExecutorTest.php
 ├── locales/
 │   ├── en_GB.po                        # Traductions anglaises
 │   └── fr_FR.po                        # Traductions françaises
+├── tools/
+│   └── compile-locales.php             # Compile chaque locales/*.po en .mo correspondant
 └── public/
     ├── css/
     │   └── clone.css                   # Styles du bouton & de la modale
@@ -114,7 +123,13 @@ clone/
 
 ## Traductions
 
-Le plugin est livré avec les locales anglaise (`en_GB`) et française (`fr_FR`). Pour ajouter une nouvelle langue, créez le fichier `.po` correspondant dans `locales/` et compilez-le en `.mo` avec `msgfmt` :
+Le plugin est livré avec les locales anglaise (`en_GB`) et française (`fr_FR`). Pour ajouter une nouvelle langue, créez le fichier `.po` correspondant dans `locales/`, puis compilez tous les fichiers `.po` en `.mo` avec le script fourni (aucune installation de `gettext` requise) :
+
+```bash
+php tools/compile-locales.php
+```
+
+Si `msgfmt` est disponible, compiler un seul fichier directement fonctionne aussi :
 
 ```bash
 msgfmt locales/fr_FR.po -o locales/fr_FR.mo
