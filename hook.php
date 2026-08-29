@@ -31,6 +31,7 @@
  */
 
 use Glpi\Plugin\Hooks;
+use GlpiPlugin\Clone\PropagationBatchExecutor;
 
 /**
  * Install the plugin
@@ -147,11 +148,12 @@ function plugin_clone_post_item_form($params)
         return;
     }
 
-    $ticket_id = (int) $item->getID();
-    $root_doc  = $CFG_GLPI['root_doc'] ?? '';
-    $ajax_url  = $root_doc . '/plugins/clone/ajax/clone_ticket.php';
+    $ticket_id   = (int) $item->getID();
+    $root_doc    = $CFG_GLPI['root_doc'] ?? '';
+    $ajax_url    = $root_doc . '/plugins/clone/ajax/clone_ticket.php';
     // Use standalone=true so this token is NOT shared with other forms on the page
-    $csrf      = Session::getNewCSRFToken(true);
+    $csrf        = Session::getNewCSRFToken(true);
+    $max_targets = PropagationBatchExecutor::MAX_TARGETS;
 
     // Copy renamed from "Clone" to "Propagate": the button now runs the
     // controlled propagation engine, not a raw clone. Plugin key/directory
@@ -162,18 +164,20 @@ function plugin_clone_post_item_form($params)
     $button_label                = htmlspecialchars(__('Propagate to entity', 'clone'), ENT_QUOTES, 'UTF-8');
     $modal_title_prefix          = htmlspecialchars(__('Propagate ticket #', 'clone'), ENT_QUOTES, 'UTF-8');
     $close_label                 = htmlspecialchars(__('Close', 'clone'), ENT_QUOTES, 'UTF-8');
-    $destination_entity_label    = htmlspecialchars(__('Destination entity', 'clone'), ENT_QUOTES, 'UTF-8');
+    $destination_entity_label    = htmlspecialchars(__('Destination entities', 'clone'), ENT_QUOTES, 'UTF-8');
     $loading_label               = htmlspecialchars(__('Loading...', 'clone'), ENT_QUOTES, 'UTF-8');
     $cancel_label                = htmlspecialchars(__('Cancel', 'clone'), ENT_QUOTES, 'UTF-8');
     $clone_label                 = htmlspecialchars(__('Propagate', 'clone'), ENT_QUOTES, 'UTF-8');
     $modal_open_error            = htmlspecialchars(__('Unable to open the propagation dialog. Check browser console.', 'clone'), ENT_QUOTES, 'UTF-8');
     $bootstrap_missing           = htmlspecialchars(__('Bootstrap is not available on this page. Please reload the page.', 'clone'), ENT_QUOTES, 'UTF-8');
     $entity_load_error           = htmlspecialchars(__('Error while loading entities.', 'clone'), ENT_QUOTES, 'UTF-8');
-    $select_entity_error         = htmlspecialchars(__('Please select a destination entity.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $select_entity_error         = htmlspecialchars(__('Please select at least one destination entity.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $too_many_entities_error     = htmlspecialchars(sprintf(__('You can propagate to at most %d entities at once.', 'clone'), PropagationBatchExecutor::MAX_TARGETS), ENT_QUOTES, 'UTF-8');
     $cloning_in_progress         = htmlspecialchars(__('Propagating...', 'clone'), ENT_QUOTES, 'UTF-8');
     $open_new_ticket_label       = htmlspecialchars(__('Open the new ticket', 'clone'), ENT_QUOTES, 'UTF-8');
     $unknown_error_label         = htmlspecialchars(__('Unknown error.', 'clone'), ENT_QUOTES, 'UTF-8');
     $communication_error_label   = htmlspecialchars(__('Communication error with server.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $results_summary_label       = htmlspecialchars(__('destinations propagated successfully', 'clone'), ENT_QUOTES, 'UTF-8');
 
     // Preview panel: shown before propagation runs, built from the exact
     // same PropagationPreflightService decision the executor uses (see
@@ -208,10 +212,13 @@ function plugin_clone_post_item_form($params)
                 data-i18n-bootstrap-missing="{$bootstrap_missing}"
                 data-i18n-entity-load-error="{$entity_load_error}"
                 data-i18n-select-entity-error="{$select_entity_error}"
+                data-i18n-too-many-entities-error="{$too_many_entities_error}"
                 data-i18n-cloning-in-progress="{$cloning_in_progress}"
                 data-i18n-open-new-ticket-label="{$open_new_ticket_label}"
                 data-i18n-unknown-error-label="{$unknown_error_label}"
                 data-i18n-communication-error-label="{$communication_error_label}"
+                data-i18n-results-summary-label="{$results_summary_label}"
+                data-max-targets="{$max_targets}"
                 data-i18n-preview-heading="{$preview_heading}"
                 data-i18n-preview-loading="{$preview_loading}"
                 data-i18n-preview-error="{$preview_error}"

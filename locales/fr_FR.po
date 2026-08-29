@@ -68,8 +68,11 @@ msgstr "Erreur de communication avec le serveur."
 msgid "Could not load the preview."
 msgstr "Impossible de charger l'aperçu."
 
-msgid "Destination entity"
-msgstr "Entité de destination"
+msgid "destinations propagated successfully"
+msgstr "destinations propagées avec succès"
+
+msgid "Destination entities"
+msgstr "Entités de destination"
 
 msgid "Error while loading entities."
 msgstr "Erreur lors du chargement des entités."
@@ -125,6 +128,9 @@ msgstr "Ouvrir le nouveau ticket"
 msgid "Please select a destination entity."
 msgstr "Veuillez sélectionner une entité de destination."
 
+msgid "Please select at least one destination entity."
+msgstr "Veuillez sélectionner au moins une entité de destination."
+
 msgid "Propagate"
 msgstr "Propager"
 
@@ -167,8 +173,8 @@ msgstr "Ce ticket a déjà été propagé vers cette entité."
 msgid "Ticket not found."
 msgstr "Ticket introuvable."
 
-msgid "Ticket successfully cloned (new ticket #%d)."
-msgstr "Ticket cloné avec succès (nouveau ticket #%d)."
+msgid "Ticket successfully propagated (new ticket #%d)."
+msgstr "Ticket propagé avec succès (nouveau ticket #%d)."
 
 msgid "Unable to open the propagation dialog. Check browser console."
 msgstr "Impossible d'ouvrir la fenêtre de propagation. Vérifiez la console du navigateur."
@@ -178,6 +184,12 @@ msgstr "Erreur inconnue."
 
 msgid "What will happen"
 msgstr "Ce qui va se passer"
+
+msgid "You can propagate to at most %d entities at once."
+msgstr "Vous pouvez propager vers au maximum %d entités à la fois."
+
+msgid "You can propagate to at most %d entities at once. You selected %d."
+msgstr "Vous pouvez propager vers au maximum %d entités à la fois. Vous en avez sélectionné %d."
 
 msgid "You do not have access to the destination entity."
 msgstr "Vous n'avez pas accès à l'entité de destination."

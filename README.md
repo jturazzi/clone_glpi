@@ -13,13 +13,14 @@ This plugin checks each of those references against the destination entity befor
 ## What it does
 
 - Adds a "Propagate to entity" button on every ticket form.
-- Opens a modal where you pick the destination entity.
-- Shows a preview of what will happen as soon as you pick one: category, location, requester, assignee, observer, and group, each marked kept or cleared with a reason, before you commit to anything.
-- Creates the ticket in the destination entity through GLPI's normal ticket creation path, so that entity's own rules (SLA assignment, business rules, and so on) get to run instead of being skipped.
-- Checks category, location, requester, assignee, observer, and assigned group against the destination entity before deciding whether to keep them.
-- Relinks any assets attached to the ticket, but only the ones actually visible from the destination entity.
-- Links the new ticket back to the original, so there's a record of where it came from.
-- Handles retries safely. If a request times out and you click again, you won't end up with two tickets.
+- Opens a modal where you pick one or more destination entities.
+- Shows a preview for each destination as soon as you pick it: category, location, requester, assignee, observer, and group, each marked kept or cleared with a reason, before you commit to anything.
+- Creates the ticket in each destination entity through GLPI's normal ticket creation path, so that entity's own rules (SLA assignment, business rules, and so on) get to run instead of being skipped.
+- Checks category, location, requester, assignee, observer, and assigned group against each destination entity before deciding whether to keep them.
+- Relinks any assets attached to the ticket, but only the ones actually visible from the destination entity in question.
+- Links each new ticket back to the original, so there's a record of where it came from.
+- Handles retries safely. If a request times out and you click again, you won't end up with duplicate tickets in any destination.
+- Propagates to up to 25 entities in one action, each with its own result, so one destination failing doesn't stop the others.
 
 ## Requirements
 
@@ -45,10 +46,10 @@ git clone https://github.com/jturazzi/clone_glpi clone
 
 1. Open an existing ticket.
 2. Click "Propagate to entity" (visible to supervisors and super-admins).
-3. Pick the destination entity from the dropdown. A preview appears showing what will carry over and what won't, and why.
-4. Click Propagate. The plugin creates the ticket and gives you a link to it.
+3. Pick one or more destination entities from the dropdown. A preview appears for each one showing what will carry over and what won't, and why.
+4. Click Propagate. The plugin creates a ticket in each destination and shows a result line per destination, with a link to the new ticket wherever it succeeded.
 
-If a category, location, technician, requester, observer, or group on the original ticket doesn't apply in the destination entity, it's simply left off the new ticket rather than carried over incorrectly. That's exactly what the preview in step 3 tells you before you commit to it. The new ticket keeps a link back to the one it came from, so you can trace it later.
+If a category, location, technician, requester, observer, or group on the original ticket doesn't apply in a given destination entity, it's simply left off that new ticket rather than carried over incorrectly. That's exactly what the preview in step 3 tells you before you commit to it. Each new ticket keeps a link back to the one it came from, so you can trace it later.
 
 ## Permissions
 
@@ -71,7 +72,11 @@ Nothing is copied onto the new ticket just because the same database ID happens 
 
 ## Retrying safely
 
-If a propagation request times out or the connection drops before you see a result, clicking the button again won't create a second ticket. The browser remembers an in-progress attempt, per ticket and per destination entity, for about thirty minutes, and the server recognises a repeated attempt as the same one instead of starting over. Picking a different destination entity, or waiting longer than that, is treated as a new attempt.
+If a propagation request times out or the connection drops before you see a result, clicking the button again won't create duplicate tickets. The browser remembers an in-progress attempt, per ticket and per set of destination entities, for about thirty minutes, and the server recognises a repeated attempt as the same one instead of starting over. If some destinations succeeded and others failed, retrying only re-attempts the ones that failed; the ones that already succeeded come back as-is. Picking a different set of destination entities, or waiting longer than that, is treated as a new attempt.
+
+## Bulk fan-out
+
+You can propagate to several entities at once, up to 25 per request. Each destination is independent: it gets its own preview, its own transaction, its own pass/fail result, and one failing has no effect on the others. This is deliberately synchronous, not queued, everything happens within the one request you submit. If you ever need more than 25 destinations at once, that's a sign this plugin would need an asynchronous, scheduled version of propagation, not just a higher number here.
 
 ## File Structure
 
@@ -88,7 +93,8 @@ clone/
 │   ├── PropagationRequest.php          # One propagation ask: source ticket + destination entity
 │   ├── PropagationPreflightService.php # Decides what to keep or clear, per field
 │   ├── PropagationPlan.php             # The decision, per field
-│   ├── PropagationExecutor.php         # Creates the ticket, links it, records the result
+│   ├── PropagationExecutor.php         # Creates the ticket, links it, records the result (one destination)
+│   ├── PropagationBatchExecutor.php    # Fans one ticket out to several destinations (bulk propagate)
 │   ├── PropagationLedgerRepository.php # Reads and writes the propagation history table
 │   ├── PropagationError.php            # Error codes shown to admins
 │   ├── EntityScopedItemVisibility.php  # Shared category/location/group visibility check
@@ -101,7 +107,8 @@ clone/
 │       └── GroupValidator.php
 ├── tests/
 │   ├── PropagationPreflightServiceTest.php
-│   └── PropagationExecutorTest.php
+│   ├── PropagationExecutorTest.php
+│   └── PropagationBatchExecutorTest.php
 ├── locales/
 │   ├── en_GB.po                        # English translations
 │   └── fr_FR.po                        # French translations

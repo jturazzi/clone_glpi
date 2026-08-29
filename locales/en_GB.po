@@ -68,8 +68,11 @@ msgstr "Communication error with server."
 msgid "Could not load the preview."
 msgstr "Could not load the preview."
 
-msgid "Destination entity"
-msgstr "Destination entity"
+msgid "destinations propagated successfully"
+msgstr "destinations propagated successfully"
+
+msgid "Destination entities"
+msgstr "Destination entities"
 
 msgid "Error while loading entities."
 msgstr "Error while loading entities."
@@ -125,6 +128,9 @@ msgstr "Open the new ticket"
 msgid "Please select a destination entity."
 msgstr "Please select a destination entity."
 
+msgid "Please select at least one destination entity."
+msgstr "Please select at least one destination entity."
+
 msgid "Propagate"
 msgstr "Propagate"
 
@@ -167,8 +173,8 @@ msgstr "This ticket was already propagated to this entity."
 msgid "Ticket not found."
 msgstr "Ticket not found."
 
-msgid "Ticket successfully cloned (new ticket #%d)."
-msgstr "Ticket successfully cloned (new ticket #%d)."
+msgid "Ticket successfully propagated (new ticket #%d)."
+msgstr "Ticket successfully propagated (new ticket #%d)."
 
 msgid "Unable to open the propagation dialog. Check browser console."
 msgstr "Unable to open the propagation dialog. Check browser console."
@@ -178,6 +184,12 @@ msgstr "Unknown error."
 
 msgid "What will happen"
 msgstr "What will happen"
+
+msgid "You can propagate to at most %d entities at once."
+msgstr "You can propagate to at most %d entities at once."
+
+msgid "You can propagate to at most %d entities at once. You selected %d."
+msgstr "You can propagate to at most %d entities at once. You selected %d."
 
 msgid "You do not have access to the destination entity."
 msgstr "You do not have access to the destination entity."
