@@ -48,6 +48,7 @@ git clone https://github.com/jturazzi/clone_glpi clone
 2. Cliquez sur « Propager vers une entité » (visible par les superviseurs et super-administrateurs).
 3. Choisissez une ou plusieurs entités de destination dans le menu déroulant. Un aperçu apparaît pour chacune, indiquant ce qui sera conservé, ce qui ne le sera pas, et pourquoi.
 4. Cliquez sur Propager. Le plugin crée un ticket dans chaque destination et affiche une ligne de résultat par destination, avec un lien vers le nouveau ticket partout où l'opération a réussi.
+5. Facultatif : avant de cliquer sur Propager, cochez « Supprimer le ticket de l'entité actuelle après la propagation » pour transformer la propagation en déplacement (voir ci-dessous).
 
 Si une catégorie, une localisation, un technicien, un demandeur, un observateur ou un groupe du ticket d'origine ne s'applique pas dans une entité de destination donnée, il est simplement omis de ce nouveau ticket plutôt que reporté à tort. C'est exactement ce que vous indique l'aperçu de l'étape 3 avant validation. Chaque nouveau ticket conserve un lien vers celui dont il provient, afin de pouvoir le retracer par la suite.
 
@@ -77,6 +78,10 @@ Si une requête de propagation expire ou que la connexion est coupée avant que 
 ## Propagation en masse
 
 Vous pouvez propager vers plusieurs entités en une seule fois, jusqu'à 25 par requête. Chaque destination est indépendante : elle a son propre aperçu, sa propre transaction, son propre résultat de réussite ou d'échec, et l'échec de l'une n'a aucun effet sur les autres. C'est délibérément synchrone, et non mis en file d'attente : tout se produit au sein de la même requête que vous soumettez. Si vous avez un jour besoin de plus de 25 destinations à la fois, c'est le signe que ce plugin aurait besoin d'une version asynchrone et planifiée de la propagation, pas simplement d'un nombre plus élevé ici.
+
+## Suppression du ticket d'origine
+
+La case n'est affichée qu'aux utilisateurs ayant le droit de supprimer le ticket. Si elle est cochée, le ticket d'origine est placé dans la corbeille de GLPI (restaurable, pas purgé) une fois la propagation terminée, mais uniquement si **toutes** les destinations ont réussi. Si une destination échoue, le ticket d'origine est conservé, car c'est la seule copie complète à partir de laquelle réessayer, et le panneau de résultats l'indique.
 
 ## Arborescence des fichiers
 

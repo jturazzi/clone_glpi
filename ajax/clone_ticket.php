@@ -163,6 +163,8 @@ try {
         exit;
     }
 
+    $delete_source = !empty($_POST['delete_source']);
+
     if (empty($entities_ids)) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => __('Please select at least one destination entity.', 'clone')]);
@@ -196,6 +198,15 @@ try {
     if (!$ticket->canViewItem()) {
         http_response_code(403);
         echo json_encode(['success' => false, 'message' => __('You do not have access to this ticket.', 'clone')]);
+        exit;
+    }
+
+    // Refuse up front rather than propagate and then fail to clean up: the
+    // user asked for a move, so a copy they can't finish as a move is not
+    // what they agreed to.
+    if ($delete_source && !$ticket->canDeleteItem()) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => __('You do not have the right to delete this ticket.', 'clone')]);
         exit;
     }
 
@@ -246,13 +257,25 @@ try {
         ];
     }
 
+    // Delete the source only when EVERY destination succeeded (a fresh
+    // creation or an idempotent replay of one). If any failed, the source is
+    // the only complete copy left and the user needs it to retry. This is
+    // GLPI's regular delete (move to the trash, restorable), not a purge.
+    // Already-trashed source (retry after a partial first attempt) is a no-op.
+    $source_deleted = false;
+    $all_succeeded  = !empty($results) && count(array_filter($results, static fn (array $r): bool => !$r['success'])) === 0;
+    if ($delete_source && $all_succeeded) {
+        $source_deleted = (bool) $ticket->fields['is_deleted'] || $ticket->delete(['id' => $ticket_id]);
+    }
+
     // Top-level success means "the request was valid and was processed",
     // not "every destination succeeded" -- a bulk request partially
     // succeeding is a normal, expected outcome, not a server error. Each
     // destination's own outcome lives in results[].success.
     echo json_encode([
-        'success' => true,
-        'results' => $response_results,
+        'success'        => true,
+        'results'        => $response_results,
+        'source_delete'  => $delete_source ? ($source_deleted ? 'deleted' : ($all_succeeded ? 'failed' : 'skipped')) : null,
     ]);
 } catch (\Throwable $e) {
     error_log('[plugin:clone] unhandled ajax error: ' . $e->getMessage());

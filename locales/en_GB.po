@@ -199,3 +199,21 @@ msgstr "You do not have access to this ticket."
 
 msgid "You do not have the required rights."
 msgstr "You do not have the required rights."
+
+msgid "Delete the ticket from the current entity after propagation"
+msgstr "Delete the ticket from the current entity after propagation"
+
+msgid "The ticket is moved to the trash and can be restored. Only done if every destination succeeds."
+msgstr "The ticket is moved to the trash and can be restored. Only done if every destination succeeds."
+
+msgid "The original ticket was deleted."
+msgstr "The original ticket was deleted."
+
+msgid "The original ticket could not be deleted."
+msgstr "The original ticket could not be deleted."
+
+msgid "The original ticket was kept because some destinations failed."
+msgstr "The original ticket was kept because some destinations failed."
+
+msgid "You do not have the right to delete this ticket."
+msgstr "You do not have the right to delete this ticket."

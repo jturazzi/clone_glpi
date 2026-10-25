@@ -48,6 +48,7 @@ git clone https://github.com/jturazzi/clone_glpi clone
 2. Click "Propagate to entity" (visible to supervisors and super-admins).
 3. Pick one or more destination entities from the dropdown. A preview appears for each one showing what will carry over and what won't, and why.
 4. Click Propagate. The plugin creates a ticket in each destination and shows a result line per destination, with a link to the new ticket wherever it succeeded.
+5. Optionally, before clicking Propagate, tick "Delete the ticket from the current entity after propagation" to turn the propagation into a move (see below).
 
 If a category, location, technician, requester, observer, or group on the original ticket doesn't apply in a given destination entity, it's simply left off that new ticket rather than carried over incorrectly. That's exactly what the preview in step 3 tells you before you commit to it. Each new ticket keeps a link back to the one it came from, so you can trace it later.
 
@@ -77,6 +78,10 @@ If a propagation request times out or the connection drops before you see a resu
 ## Bulk fan-out
 
 You can propagate to several entities at once, up to 25 per request. Each destination is independent: it gets its own preview, its own transaction, its own pass/fail result, and one failing has no effect on the others. This is deliberately synchronous, not queued, everything happens within the one request you submit. If you ever need more than 25 destinations at once, that's a sign this plugin would need an asynchronous, scheduled version of propagation, not just a higher number here.
+
+## Deleting the original ticket
+
+The checkbox is only shown to users who have the right to delete the ticket. When ticked, the original ticket is moved to GLPI's trash (restorable, not purged) once the propagation is done, but only if **every** destination succeeded. If any destination failed, the original is kept, since it is the only complete copy left to retry from, and the result panel says so.
 
 ## File Structure
 

@@ -199,3 +199,21 @@ msgstr "Vous n'avez pas accès à ce ticket."
 
 msgid "You do not have the required rights."
 msgstr "Vous n'avez pas les droits nécessaires."
+
+msgid "Delete the ticket from the current entity after propagation"
+msgstr "Supprimer le ticket de l'entité actuelle après la propagation"
+
+msgid "The ticket is moved to the trash and can be restored. Only done if every destination succeeds."
+msgstr "Le ticket est placé dans la corbeille et peut être restauré. Uniquement si toutes les destinations réussissent."
+
+msgid "The original ticket was deleted."
+msgstr "Le ticket d'origine a été supprimé."
+
+msgid "The original ticket could not be deleted."
+msgstr "Le ticket d'origine n'a pas pu être supprimé."
+
+msgid "The original ticket was kept because some destinations failed."
+msgstr "Le ticket d'origine a été conservé car certaines destinations ont échoué."
+
+msgid "You do not have the right to delete this ticket."
+msgstr "Vous n'avez pas le droit de supprimer ce ticket."

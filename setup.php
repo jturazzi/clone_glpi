@@ -32,7 +32,7 @@
 
 use Glpi\Plugin\Hooks;
 
-define('PLUGIN_CLONE_VERSION', '1.4.0');
+define('PLUGIN_CLONE_VERSION', '1.5.0');
 
 /**
  * Init hooks, options, and register classes

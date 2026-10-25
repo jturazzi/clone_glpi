@@ -194,6 +194,13 @@ function plugin_clone_post_item_form($params)
     $preview_field_observer      = htmlspecialchars(__('Observer', 'clone'), ENT_QUOTES, 'UTF-8');
     $preview_field_group         = htmlspecialchars(__('Group', 'clone'), ENT_QUOTES, 'UTF-8');
 
+    $delete_source_label         = htmlspecialchars(__('Delete the ticket from the current entity after propagation', 'clone'), ENT_QUOTES, 'UTF-8');
+    $delete_source_hint          = htmlspecialchars(__('The ticket is moved to the trash and can be restored. Only done if every destination succeeds.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $delete_source_deleted       = htmlspecialchars(__('The original ticket was deleted.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $delete_source_failed        = htmlspecialchars(__('The original ticket could not be deleted.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $delete_source_skipped       = htmlspecialchars(__('The original ticket was kept because some destinations failed.', 'clone'), ENT_QUOTES, 'UTF-8');
+    $can_delete_source           = $item->canDeleteItem() ? '1' : '0';
+
     echo <<<HTML
     <div id="plugin-clone-container" class="plugin-clone-wrapper">
         <button type="button" 
@@ -219,6 +226,12 @@ function plugin_clone_post_item_form($params)
                 data-i18n-communication-error-label="{$communication_error_label}"
                 data-i18n-results-summary-label="{$results_summary_label}"
                 data-max-targets="{$max_targets}"
+                data-can-delete-source="{$can_delete_source}"
+                data-i18n-delete-source-label="{$delete_source_label}"
+                data-i18n-delete-source-hint="{$delete_source_hint}"
+                data-i18n-delete-source-deleted="{$delete_source_deleted}"
+                data-i18n-delete-source-failed="{$delete_source_failed}"
+                data-i18n-delete-source-skipped="{$delete_source_skipped}"
                 data-i18n-preview-heading="{$preview_heading}"
                 data-i18n-preview-loading="{$preview_loading}"
                 data-i18n-preview-error="{$preview_error}"

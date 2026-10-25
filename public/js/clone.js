@@ -147,7 +147,13 @@
         // server enforces the real cap independently either way.
         var maxTargets = parseInt(btn.getAttribute("data-max-targets"), 10) || 25;
         var rootDoc = (typeof CFG_GLPI !== "undefined" && CFG_GLPI.root_doc) ? CFG_GLPI.root_doc : "";
+        var canDeleteSource = btn.getAttribute("data-can-delete-source") === "1";
         var i18n = {
+            deleteSourceLabel: btn.getAttribute("data-i18n-delete-source-label") || "Delete the ticket from the current entity after propagation",
+            deleteSourceHint: btn.getAttribute("data-i18n-delete-source-hint") || "",
+            deleteSourceDeleted: btn.getAttribute("data-i18n-delete-source-deleted") || "The original ticket was deleted.",
+            deleteSourceFailed: btn.getAttribute("data-i18n-delete-source-failed") || "The original ticket could not be deleted.",
+            deleteSourceSkipped: btn.getAttribute("data-i18n-delete-source-skipped") || "The original ticket was kept because some destinations failed.",
             modalTitlePrefix: btn.getAttribute("data-i18n-modal-title-prefix") || "Propagate ticket #",
             closeLabel: btn.getAttribute("data-i18n-close-label") || "Close",
             destinationEntityLabel: btn.getAttribute("data-i18n-destination-entity-label") || "Destination entity",
@@ -205,6 +211,14 @@
             '          </div>' +
             '        </div>' +
             '        <div id="plugin-clone-preview" class="mb-3 d-none"></div>' +
+            (canDeleteSource
+                ? '        <div class="form-check mb-3">' +
+                  '          <input class="form-check-input" type="checkbox" id="plugin-clone-delete-source">' +
+                  '          <label class="form-check-label" for="plugin-clone-delete-source">' + escapeHtml(i18n.deleteSourceLabel) +
+                  '            <div class="text-muted small">' + escapeHtml(i18n.deleteSourceHint) + '</div>' +
+                  '          </label>' +
+                  '        </div>'
+                : '') +
             '        <div id="plugin-clone-alert" class="d-none"></div>' +
             '      </div>' +
             '      <div class="modal-footer">' +
@@ -330,6 +344,10 @@
                 formData.append("entities_id[]", id);
             });
             formData.append("propagation_uuid", propagationUuid);
+            var deleteSourceBox = document.getElementById("plugin-clone-delete-source");
+            if (deleteSourceBox && deleteSourceBox.checked) {
+                formData.append("delete_source", "1");
+            }
             formData.append("_glpi_csrf_token", csrf);
 
             fetch(ajaxUrl, {
@@ -359,7 +377,7 @@
                 var results = data.results || [];
                 var allSucceeded = results.length > 0 && results.every(function (r) { return r.success; });
 
-                renderBulkResults(results, entityNames, i18n);
+                renderBulkResults(results, entityNames, i18n, data.source_delete);
 
                 if (allSucceeded) {
                     submitBtn.classList.add("d-none");
@@ -512,7 +530,7 @@
     // batch -- with several destinations, "3 of 5 succeeded" as one message
     // hides exactly the information (which two, and why) needed to decide
     // what to retry.
-    function renderBulkResults(results, entityNames, i18n) {
+    function renderBulkResults(results, entityNames, i18n, sourceDelete) {
         var alertDiv = document.getElementById("plugin-clone-alert");
         if (!alertDiv) {
             return;
@@ -535,10 +553,19 @@
                 '</div>';
         }).join("");
 
+        var deleteMessages = {
+            deleted: i18n.deleteSourceDeleted,
+            failed: i18n.deleteSourceFailed,
+            skipped: i18n.deleteSourceSkipped
+        };
+        var deleteNote = deleteMessages[sourceDelete]
+            ? '<div class="small pt-2 fw-bold">' + escapeHtml(deleteMessages[sourceDelete]) + '</div>'
+            : '';
+
         alertDiv.className = "alert alert-" + summaryClass;
         alertDiv.innerHTML =
             '<div class="fw-bold mb-1">' + succeeded + ' / ' + total + ' ' + escapeHtml(i18n.resultsSummaryLabel) + '</div>' +
-            rows;
+            rows + deleteNote;
         alertDiv.classList.remove("d-none");
     }
 
