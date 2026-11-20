@@ -14,8 +14,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 use GlpiPlugin\Clone\PropagationFieldDecision;
 use GlpiPlugin\Clone\PropagationPreflightService;
 

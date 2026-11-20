@@ -26,8 +26,8 @@ This plugin checks each of those references against the destination entity befor
 
 | Requirement | Version |
 |-------------|---------|
-| GLPI        | 11.0 or later, before 12.0 |
-| PHP         | Whatever GLPI 11 itself requires |
+| GLPI        | 11.0 or 12.x               |
+| PHP         | Whatever your GLPI version itself requires |
 
 No additional PHP extensions are needed. This version does add one database table for its own propagation history (see below); it's created automatically on install and dropped on uninstall.
 

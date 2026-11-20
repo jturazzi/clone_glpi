@@ -348,15 +348,18 @@
             if (deleteSourceBox && deleteSourceBox.checked) {
                 formData.append("delete_source", "1");
             }
-            formData.append("_glpi_csrf_token", csrf);
+            // GLPI 11 needs a CSRF token; GLPI 12 validates the request via
+            // Sec-Fetch-Site/Origin headers and the server sends an empty token.
+            var postHeaders = { "X-Requested-With": "XMLHttpRequest" };
+            if (csrf) {
+                formData.append("_glpi_csrf_token", csrf);
+                postHeaders["X-Glpi-Csrf-Token"] = csrf;
+            }
 
             fetch(ajaxUrl, {
                 method: "POST",
                 credentials: "same-origin",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-Glpi-Csrf-Token": csrf
-                },
+                headers: postHeaders,
                 body: formData
             })
             .then(function (response) {

@@ -26,8 +26,8 @@ Ce plugin vérifie chacune de ces références par rapport à l'entité de desti
 
 | Prérequis | Version                                 |
 |-----------|-----------------------------------------|
-| GLPI      | 11.0 ou supérieur, avant 12.0           |
-| PHP       | Selon les exigences de GLPI 11 lui-même |
+| GLPI      | 11.0 ou 12.x                            |
+| PHP       | Selon les exigences de votre version de GLPI |
 
 Aucune extension PHP supplémentaire n'est nécessaire. Cette version ajoute une table en base de données pour son propre historique de propagation (voir plus bas) ; elle est créée automatiquement à l'installation et supprimée à la désinstallation.
 

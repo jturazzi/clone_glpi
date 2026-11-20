@@ -12,8 +12,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 use GlpiPlugin\Clone\PropagationBatchExecutor;
 
 Session::checkLoginUser();

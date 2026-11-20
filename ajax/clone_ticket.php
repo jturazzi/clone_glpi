@@ -12,8 +12,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 use GlpiPlugin\Clone\EntityScopedItemVisibility;
 use GlpiPlugin\Clone\PropagationBatchExecutor;
 use GlpiPlugin\Clone\PropagationError;
@@ -123,7 +121,8 @@ try {
         exit;
     }
 
-    // CSRF is validated by GLPI's CheckCsrfListener (kernel level) via X-Glpi-Csrf-Token header
+    // CSRF is validated by GLPI's CheckCsrfListener (kernel level): via the
+    // X-Glpi-Csrf-Token header on GLPI 11, via Sec-Fetch-Site/Origin on GLPI 12.
 
     $ticket_id         = isset($_POST['ticket_id']) ? (int) $_POST['ticket_id'] : 0;
     $propagation_uuid  = $_POST['propagation_uuid'] ?? null;

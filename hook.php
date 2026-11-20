@@ -151,8 +151,13 @@ function plugin_clone_post_item_form($params)
     $ticket_id   = (int) $item->getID();
     $root_doc    = $CFG_GLPI['root_doc'] ?? '';
     $ajax_url    = $root_doc . '/plugins/clone/ajax/clone_ticket.php';
+    // GLPI 11 validates AJAX POSTs with a per-request token. GLPI 12 dropped
+    // token-based CSRF in favour of Sec-Fetch-Site/Origin header checks and
+    // deprecated Session::getNewCSRFToken(), so only generate one on GLPI 11.
     // Use standalone=true so this token is NOT shared with other forms on the page
-    $csrf        = Session::getNewCSRFToken(true);
+    $csrf        = version_compare(GLPI_VERSION, '12.0.0-dev', '<')
+        ? Session::getNewCSRFToken(true)
+        : '';
     $max_targets = PropagationBatchExecutor::MAX_TARGETS;
 
     // Copy renamed from "Clone" to "Propagate": the button now runs the

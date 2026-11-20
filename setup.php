@@ -32,7 +32,7 @@
 
 use Glpi\Plugin\Hooks;
 
-define('PLUGIN_CLONE_VERSION', '1.5.0');
+define('PLUGIN_CLONE_VERSION', '1.6.0');
 
 /**
  * Init hooks, options, and register classes
@@ -43,8 +43,12 @@ function plugin_init_clone()
 
     Plugin::loadLang('clone');
 
-    // CSRF_COMPLIANT is deprecated in GLPI 11, but kept for backward compat
-    $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT]['clone'] = true;
+    // CSRF_COMPLIANT is deprecated in GLPI 11 and removed in GLPI 12
+    // (referencing the constant there is a fatal error), so only set it
+    // when it still exists.
+    if (defined(Hooks::class . '::CSRF_COMPLIANT')) {
+        $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT]['clone'] = true;
+    }
 
     if (Plugin::isPluginActive('clone')) {
         // Add JS and CSS on all pages
@@ -67,11 +71,11 @@ function plugin_version_clone()
         'version'      => PLUGIN_CLONE_VERSION,
         'author'       => 'Jérémy TURAZZI',
         'license'      => 'MIT',
-        'homepage'     => '',
+        'homepage'     => 'https://github.com/jturazzi/clone_glpi',
         'requirements' => [
             'glpi' => [
                 'min' => '11.0',
-                'max' => '12.0',
+                'max' => '13.0',
             ],
         ],
     ];
